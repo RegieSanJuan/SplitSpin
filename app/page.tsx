@@ -51,6 +51,7 @@ const workoutSplits = [
   },
 ];
 
+// Define angle ranges for each segment (like the Chart.js reference)
 const workoutPrograms = {
   "Full Body (FBEOD)": {
     description:
@@ -1154,23 +1155,37 @@ export default function WorkoutSpinner() {
     setShowWorkoutProgram(false);
     setShowCongratulations(false);
 
-    const spins = 5 + Math.random() * 5; // 5-10 full rotations
-    const finalRotation = rotation + spins * 360 + Math.random() * 360;
+    // Pre-select a random winner first
+    const winnerIndex = Math.floor(Math.random() * workoutSplits.length);
+    console.log("Selected winner index:", winnerIndex);
+    console.log("Selected winner:", workoutSplits[winnerIndex].name);
+
+    // Calculate the angle for each segment
+    const segmentAngle = 360 / workoutSplits.length;
+    console.log("Segment angle:", segmentAngle);
+
+    // Calculate where this segment should end up to be under the pointer
+    // Pointer is at 0 degrees (right side), we want the middle of the winner segment there
+    const targetAngle = -(winnerIndex * segmentAngle + segmentAngle / 2);
+    console.log("Target angle:", targetAngle);
+
+    // Add multiple spins for effect
+    const spins = 5 + Math.random() * 3; // 5-8 full rotations
+    const finalRotation = rotation + spins * 360 + targetAngle;
+    console.log("Current rotation:", rotation);
+    console.log("Final rotation:", finalRotation);
+
     setRotation(finalRotation);
 
     setTimeout(() => {
-      const segmentAngle = 360 / workoutSplits.length;
-      const normalizedRotation = finalRotation % 360;
-
-      // Adjust for pointer position and account for clockwise rotation
-      const adjustedAngle = (normalizedRotation + 90) % 360;
-      const selectedIndex =
-        Math.floor(adjustedAngle / segmentAngle) % workoutSplits.length;
-
-      setSelectedSplit(workoutSplits[selectedIndex].name);
+      setSelectedSplit(workoutSplits[winnerIndex].name);
       setIsSpinning(false);
       setShowCongratulations(true);
-    }, 4000); // Increased spin duration for better effect
+      console.log(
+        "Animation complete, winner set:",
+        workoutSplits[winnerIndex].name
+      );
+    }, 4000); // Match the CSS transition duration
   };
 
   const handleShowSplit = () => {
@@ -1371,20 +1386,20 @@ export default function WorkoutSpinner() {
                     </text>
                   </svg>
 
-                  {/* Enhanced triangular pointer */}
-                  <div className="absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-3">
+                  {/* Enhanced triangular pointer - pointing left into the wheel */}
+                  <div className="absolute top-1/2 right-[-8px] transform -translate-y-1/2 z-10">
                     <div className="relative">
+                      {/* Main pointer triangle */}
                       <div
-                        className="w-0 h-0 border-t-[20px] border-b-[20px] border-l-[35px] border-t-transparent border-b-transparent border-l-blue-500"
+                        className="w-0 h-0 border-t-[25px] border-b-[25px] border-l-[40px] border-t-transparent border-b-transparent border-l-red-600"
                         style={{
-                          filter: "drop-shadow(3px 3px 6px rgba(0,0,0,0.3))",
+                          filter: "drop-shadow(3px 3px 8px rgba(0,0,0,0.4))",
                         }}
                       ></div>
                       {/* Inner highlight for 3D effect */}
-                      <div
-                        className="absolute top-1/2 left-0 transform -translate-y-1/2 w-0 h-0 border-t-[15px] border-b-[15px] border-l-[25px] border-t-transparent border-b-transparent border-l-blue-400"
-                        style={{ left: "-30px" }}
-                      ></div>
+                      <div className="absolute top-1/2 left-[-35px] transform -translate-y-1/2 w-0 h-0 border-t-[18px] border-b-[18px] border-l-[28px] border-t-transparent border-b-transparent border-l-red-400"></div>
+                      {/* White center dot */}
+                      <div className="absolute top-1/2 left-[-42px] transform -translate-y-1/2 w-3 h-3 bg-white rounded-full border-2 border-red-600"></div>
                     </div>
                   </div>
                 </div>
