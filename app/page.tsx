@@ -51,6 +51,28 @@ const workoutSplits = [
   },
 ];
 
+// Precise segment calculations for 360-degree wheel
+const totalSegments = workoutSplits.length; // 7 segments
+const degreesPerSegment = 360 / totalSegments; // 51.428571... degrees per segment
+
+// Create precise segment boundaries
+const wheelSegments = workoutSplits.map((split, index) => {
+  const startAngle = index * degreesPerSegment; // Start of this segment
+  const endAngle = (index + 1) * degreesPerSegment; // End of this segment
+  const middleAngle = startAngle + degreesPerSegment / 2; // Middle of this segment
+
+  return {
+    ...split,
+    index,
+    startAngle, // 0, 51.43, 102.86, 154.29, 205.71, 257.14, 308.57
+    endAngle, // 51.43, 102.86, 154.29, 205.71, 257.14, 308.57, 360
+    middleAngle,
+    degreesPerSegment,
+  };
+});
+
+console.log("Wheel segments with precise angles:", wheelSegments);
+
 // Define angle ranges for each segment (like the Chart.js reference)
 const workoutPrograms = {
   "Full Body (FBEOD)": {
@@ -1148,6 +1170,42 @@ export default function WorkoutSpinner() {
   const [showCongratulations, setShowCongratulations] = useState(false);
   const [showWorkoutProgram, setShowWorkoutProgram] = useState(false);
 
+  // Function to determine which segment is under the pointer (at top - 90 degrees)
+  const getSegmentAtPointer = (wheelRotation: number) => {
+    // Normalize the rotation to 0-360 degrees
+    const normalizedRotation = ((wheelRotation % 360) + 360) % 360;
+
+    // The pointer is at the top (90 degrees from the right/0 degrees)
+    // We need to find which segment is currently at the top position
+    // Since segments start from 0 degrees and go clockwise, and the wheel rotates,
+    // we need to calculate which segment is now at the 90-degree position
+
+    // The effective angle that's now at the pointer position (top)
+    const pointerAngle = (90 - normalizedRotation + 360) % 360;
+
+    // Find which segment this angle falls into
+    for (let i = 0; i < wheelSegments.length; i++) {
+      const segment = wheelSegments[i];
+      if (
+        pointerAngle >= segment.startAngle &&
+        pointerAngle < segment.endAngle
+      ) {
+        console.log("Pointer angle:", pointerAngle);
+        console.log("Found segment:", segment.name);
+        console.log(
+          "Segment range:",
+          segment.startAngle,
+          "to",
+          segment.endAngle
+        );
+        return segment;
+      }
+    }
+
+    // Fallback to first segment if no match (shouldn't happen)
+    return wheelSegments[0];
+  };
+
   const spinWheel = () => {
     if (isSpinning) return;
 
@@ -1155,36 +1213,31 @@ export default function WorkoutSpinner() {
     setShowWorkoutProgram(false);
     setShowCongratulations(false);
 
-    // Pre-select a random winner first
-    const winnerIndex = Math.floor(Math.random() * workoutSplits.length);
-    console.log("Selected winner index:", winnerIndex);
-    console.log("Selected winner:", workoutSplits[winnerIndex].name);
+    // Generate a random final rotation
+    const spins = 5 + Math.random() * 3; // 5-8 full rotations for effect
+    const randomAngle = Math.random() * 360; // Random final position
+    const finalRotation = rotation + spins * 360 + randomAngle;
 
-    // Calculate the angle for each segment
-    const segmentAngle = 360 / workoutSplits.length;
-    console.log("Segment angle:", segmentAngle);
-
-    // Calculate where this segment should end up to be under the pointer
-    // Pointer is at 0 degrees (right side), we want the middle of the winner segment there
-    const targetAngle = -(winnerIndex * segmentAngle + segmentAngle / 2);
-    console.log("Target angle:", targetAngle);
-
-    // Add multiple spins for effect
-    const spins = 5 + Math.random() * 3; // 5-8 full rotations
-    const finalRotation = rotation + spins * 360 + targetAngle;
     console.log("Current rotation:", rotation);
+    console.log("Spins:", spins);
+    console.log("Random angle:", randomAngle);
     console.log("Final rotation:", finalRotation);
 
     setRotation(finalRotation);
 
     setTimeout(() => {
-      setSelectedSplit(workoutSplits[winnerIndex].name);
+      // Determine which segment is under the pointer after spinning
+      const selectedSegment = getSegmentAtPointer(finalRotation);
+
+      console.log(
+        "Final wheel position - selected segment:",
+        selectedSegment.name
+      );
+      console.log("Segment details:", selectedSegment);
+
+      setSelectedSplit(selectedSegment.name);
       setIsSpinning(false);
       setShowCongratulations(true);
-      console.log(
-        "Animation complete, winner set:",
-        workoutSplits[winnerIndex].name
-      );
     }, 4000); // Match the CSS transition duration
   };
 
@@ -1271,31 +1324,30 @@ export default function WorkoutSpinner() {
                     style={{ transform: `rotate(${rotation}deg)` }}
                     onClick={spinWheel}
                   >
-                    {workoutSplits.map((split, index) => {
-                      const segmentAngle = 360 / workoutSplits.length;
-                      const startAngle =
-                        (index * segmentAngle - 90) * (Math.PI / 180);
-                      const endAngle =
-                        ((index + 1) * segmentAngle - 90) * (Math.PI / 180);
-                      const midAngle = (startAngle + endAngle) / 2;
+                    {wheelSegments.map((segment, index) => {
+                      // Convert degrees to radians, segments start from 0 degrees (right side)
+                      const startAngleRad =
+                        segment.startAngle * (Math.PI / 180);
+                      const endAngleRad = segment.endAngle * (Math.PI / 180);
+                      const midAngleRad = segment.middleAngle * (Math.PI / 180);
 
-                      const largeArcFlag = segmentAngle > 180 ? 1 : 0;
+                      const largeArcFlag =
+                        segment.degreesPerSegment > 180 ? 1 : 0;
                       const radius = 240;
-                      const x1 = 250 + radius * Math.cos(startAngle);
-                      const y1 = 250 + radius * Math.sin(startAngle);
-                      const x2 = 250 + radius * Math.cos(endAngle);
-                      const y2 = 250 + radius * Math.sin(endAngle);
+                      const x1 = 250 + radius * Math.cos(startAngleRad);
+                      const y1 = 250 + radius * Math.sin(startAngleRad);
+                      const x2 = 250 + radius * Math.cos(endAngleRad);
+                      const y2 = 250 + radius * Math.sin(endAngleRad);
 
                       // Text positioning along the arc
                       const textRadius = 160;
-                      const textAngle = midAngle + Math.PI / 2; // Rotate text to follow arc
 
                       return (
                         <g key={index}>
                           {/* Segment path */}
                           <path
                             d={`M 250 250 L ${x1} ${y1} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2} Z`}
-                            fill={split.color}
+                            fill={segment.color}
                             stroke="#ffffff"
                             strokeWidth="3"
                             className="hover:brightness-110 transition-all duration-200"
@@ -1306,12 +1358,12 @@ export default function WorkoutSpinner() {
                             <path
                               id={`textPath${index}`}
                               d={`M ${
-                                250 + textRadius * Math.cos(startAngle)
+                                250 + textRadius * Math.cos(startAngleRad)
                               } ${
-                                250 + textRadius * Math.sin(startAngle)
+                                250 + textRadius * Math.sin(startAngleRad)
                               } A ${textRadius} ${textRadius} 0 ${largeArcFlag} 1 ${
-                                250 + textRadius * Math.cos(endAngle)
-                              } ${250 + textRadius * Math.sin(endAngle)}`}
+                                250 + textRadius * Math.cos(endAngleRad)
+                              } ${250 + textRadius * Math.sin(endAngleRad)}`}
                             />
                           </defs>
 
@@ -1330,7 +1382,7 @@ export default function WorkoutSpinner() {
                               href={`#textPath${index}`}
                               startOffset="50%"
                             >
-                              {split.name}
+                              {segment.name}
                             </textPath>
                           </text>
                         </g>
@@ -1386,20 +1438,20 @@ export default function WorkoutSpinner() {
                     </text>
                   </svg>
 
-                  {/* Enhanced triangular pointer - pointing left into the wheel */}
-                  <div className="absolute top-1/2 right-[-8px] transform -translate-y-1/2 z-10">
+                  {/* Enhanced triangular pointer - pointing down from the top */}
+                  <div className="absolute top-[-8px] left-1/2 transform -translate-x-1/2 z-10">
                     <div className="relative">
-                      {/* Main pointer triangle */}
+                      {/* Main pointer triangle pointing down */}
                       <div
-                        className="w-0 h-0 border-t-[25px] border-b-[25px] border-l-[40px] border-t-transparent border-b-transparent border-l-red-600"
+                        className="w-0 h-0 border-l-[25px] border-r-[25px] border-t-[40px] border-l-transparent border-r-transparent border-t-red-600"
                         style={{
                           filter: "drop-shadow(3px 3px 8px rgba(0,0,0,0.4))",
                         }}
                       ></div>
                       {/* Inner highlight for 3D effect */}
-                      <div className="absolute top-1/2 left-[-35px] transform -translate-y-1/2 w-0 h-0 border-t-[18px] border-b-[18px] border-l-[28px] border-t-transparent border-b-transparent border-l-red-400"></div>
+                      <div className="absolute top-[7px] left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[18px] border-r-[18px] border-t-[28px] border-l-transparent border-r-transparent border-t-red-400"></div>
                       {/* White center dot */}
-                      <div className="absolute top-1/2 left-[-42px] transform -translate-y-1/2 w-3 h-3 bg-white rounded-full border-2 border-red-600"></div>
+                      <div className="absolute top-[-3px] left-1/2 transform -translate-x-1/2 w-3 h-3 bg-white rounded-full border-2 border-red-600"></div>
                     </div>
                   </div>
                 </div>
