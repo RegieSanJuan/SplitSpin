@@ -4,9 +4,8 @@ import { GeistMono } from 'geist/font/mono'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
-  generator: 'v0.app',
+  title: 'SplitSPin',
+  description: 'A fun spin-the-wheel web app that randomly selects your workout split.',
 }
 
 export default function RootLayout({
