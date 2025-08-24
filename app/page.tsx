@@ -1291,20 +1291,20 @@ export default function WorkoutSpinner() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 p-4">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 p-2 sm:p-4 lg:p-6">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent mb-2">
+        <div className="text-center mb-8 sm:mb-12 px-2">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent mb-2 leading-tight">
             SplitSpin
           </h1>
-          <h2 className="text-2xl md:text-4xl font-semibold text-gray-700 mb-4">
+          <h2 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-semibold text-gray-700 mb-3 sm:mb-4 px-2">
             Hirap Ka Na Ba sa Workout Split Mo?
           </h2>
-          <p className="text-xl text-gray-700 mb-4">
+          <p className="text-base sm:text-lg md:text-xl text-gray-700 mb-3 sm:mb-4 px-2 max-w-3xl mx-auto">
             Let the wheel decide your next training plan for this week!
           </p>
-          <Badge variant="secondary" className="text-sm px-4 py-2">
+          <Badge variant="secondary" className="text-xs sm:text-sm px-3 sm:px-4 py-1 sm:py-2">
             🇵🇭 Filipino Fitness Spinner
           </Badge>
         </div>
@@ -1312,15 +1312,15 @@ export default function WorkoutSpinner() {
         {!showWorkoutProgram ? (
           <>
             {/* Spinning Wheel */}
-            <div className="flex justify-center mb-12">
-              <div className="relative">
+            <div className="flex justify-center mb-8 sm:mb-12">
+              <div className="relative w-full max-w-[300px] sm:max-w-[400px] md:max-w-[450px] lg:max-w-[500px] aspect-square">
                 {/* Main Wheel Container */}
-                <div className="relative w-[500px] h-[500px] drop-shadow-2xl">
+                <div className="relative w-full h-full drop-shadow-2xl">
                   <svg
-                    width="500"
-                    height="500"
+                    width="100%"
+                    height="100%"
                     viewBox="0 0 500 500"
-                    className="transition-transform duration-[4000ms] ease-out cursor-pointer"
+                    className="transition-transform duration-[4000ms] ease-out cursor-pointer w-full h-full"
                     style={{ transform: `rotate(${rotation}deg)` }}
                     onClick={spinWheel}
                   >
@@ -1439,13 +1439,13 @@ export default function WorkoutSpinner() {
                   </svg>
 
                   {/* Enhanced triangular pointer - pointing down from the top */}
-                  <div className="absolute top-[-8px] left-1/2 transform -translate-x-1/2 z-10">
+                  <div className="absolute top-[-4px] sm:top-[-6px] md:top-[-8px] left-1/2 transform -translate-x-1/2 z-10">
                     <div className="relative">
                       {/* Main pointer triangle pointing down */}
                       <div
-                        className="w-0 h-0 border-l-[25px] border-r-[25px] border-t-[40px] border-l-transparent border-r-transparent border-t-red-600"
+                        className="w-0 h-0 border-l-[15px] sm:border-l-[20px] md:border-l-[25px] border-r-[15px] sm:border-r-[20px] md:border-r-[25px] border-t-[25px] sm:border-t-[32px] md:border-t-[40px] border-l-transparent border-r-transparent border-t-red-600"
                         style={{
-                          filter: "drop-shadow(3px 3px 8px rgba(0,0,0,0.4))",
+                          filter: "drop-shadow(2px 2px 6px rgba(0,0,0,0.4))",
                         }}
                       ></div>
                       {/* Inner highlight for 3D effect */}
@@ -1459,20 +1459,20 @@ export default function WorkoutSpinner() {
             </div>
 
             {/* Spin Button */}
-            <div className="text-center mb-12">
+            <div className="text-center mb-8 sm:mb-12 px-4">
               <Button
                 onClick={spinWheel}
                 disabled={isSpinning}
                 size="lg"
-                className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white px-12 py-6 text-xl font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                className="bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700 text-white px-6 sm:px-8 md:px-12 py-3 sm:py-4 md:py-6 text-sm sm:text-lg md:text-xl font-bold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none w-full max-w-xs sm:max-w-sm md:max-w-none md:w-auto"
               >
                 {isSpinning ? (
-                  <div className="flex items-center gap-3">
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    Spinning...
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-sm sm:text-base md:text-lg">Spinning...</span>
                   </div>
                 ) : (
-                  "🎯 Spin the Wheel!"
+                  <span className="text-sm sm:text-base md:text-lg">🎯 Spin the Wheel!</span>
                 )}
               </Button>
             </div>
@@ -1480,36 +1480,36 @@ export default function WorkoutSpinner() {
         ) : (
           selectedSplit &&
           workoutPrograms[selectedSplit as keyof typeof workoutPrograms] && (
-            <div>
+            <div className="px-2 sm:px-4">
               {/* Back to Wheel Button */}
-              <div className="text-center mb-8">
+              <div className="text-center mb-6 sm:mb-8">
                 <Button
                   onClick={handleBackToWheel}
                   variant="outline"
                   size="lg"
-                  className="bg-white hover:bg-gray-50 text-gray-700 border-2 border-gray-300 px-8 py-3 text-lg font-semibold rounded-full shadow-md hover:shadow-lg transition-all duration-300"
+                  className="bg-white hover:bg-gray-50 text-gray-700 border-2 border-gray-300 px-4 sm:px-6 md:px-8 py-2 sm:py-3 text-sm sm:text-base md:text-lg font-semibold rounded-full shadow-md hover:shadow-lg transition-all duration-300"
                 >
                   ← Back to Wheel
                 </Button>
               </div>
 
-              <div className="space-y-8">
+              <div className="space-y-6 sm:space-y-8">
                 {/* Header Card */}
                 <Card className="shadow-2xl border-0 overflow-hidden">
-                  <CardHeader className="bg-gradient-to-br from-blue-600 via-purple-600 to-green-600 text-white p-8">
+                  <CardHeader className="bg-gradient-to-br from-blue-600 via-purple-600 to-green-600 text-white p-4 sm:p-6 md:p-8">
                     <div className="text-center">
-                      <div className="flex justify-center mb-4">
-                        <div className="bg-white/20 p-4 rounded-full">
-                          <span className="text-4xl">🎯</span>
+                      <div className="flex justify-center mb-3 sm:mb-4">
+                        <div className="bg-white/20 p-3 sm:p-4 rounded-full">
+                          <span className="text-2xl sm:text-3xl md:text-4xl">🎯</span>
                         </div>
                       </div>
-                      <CardTitle className="text-4xl font-bold mb-3">
+                      <CardTitle className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3">
                         Your Workout Split
                       </CardTitle>
-                      <div className="text-3xl font-bold text-yellow-300 mb-4">
+                      <div className="text-xl sm:text-2xl md:text-3xl font-bold text-yellow-300 mb-3 sm:mb-4 px-2">
                         {selectedSplit}
                       </div>
-                      <CardDescription className="text-xl text-blue-100 max-w-3xl mx-auto leading-relaxed">
+                      <CardDescription className="text-sm sm:text-base md:text-lg lg:text-xl text-blue-100 max-w-3xl mx-auto leading-relaxed px-2">
                         {
                           workoutPrograms[
                             selectedSplit as keyof typeof workoutPrograms
@@ -1517,23 +1517,23 @@ export default function WorkoutSpinner() {
                         }
                       </CardDescription>
                     </div>
-                    <div className="flex justify-center gap-6 mt-8">
+                    <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 md:gap-6 mt-6 sm:mt-8 px-2">
                       <Button
                         onClick={copyToClipboard}
                         variant="secondary"
                         size="lg"
-                        className="bg-white/90 text-blue-700 hover:bg-white font-semibold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+                        className="bg-white/90 text-blue-700 hover:bg-white font-semibold px-4 sm:px-6 md:px-8 py-2 sm:py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base"
                       >
-                        <Copy className="w-5 h-5 mr-2" />
+                        <Copy className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                         Copy Program
                       </Button>
                       <Button
                         onClick={takeScreenshot}
                         variant="secondary"
                         size="lg"
-                        className="bg-white/90 text-green-700 hover:bg-white font-semibold px-8 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+                        className="bg-white/90 text-green-700 hover:bg-white font-semibold px-4 sm:px-6 md:px-8 py-2 sm:py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base"
                       >
-                        <Camera className="w-5 h-5 mr-2" />
+                        <Camera className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                         Screenshot
                       </Button>
                     </div>
@@ -1541,54 +1541,54 @@ export default function WorkoutSpinner() {
                 </Card>
 
                 <Card className="shadow-xl border-0 bg-gradient-to-br from-white to-gray-50">
-                  <CardHeader className="bg-gradient-to-r from-green-500 to-teal-600 text-white">
-                    <CardTitle className="text-2xl text-center flex items-center justify-center gap-3">
-                      <span className="text-2xl">💪</span>
-                      Workout Schedule & Details
+                  <CardHeader className="bg-gradient-to-r from-green-500 to-teal-600 text-white p-4 sm:p-6">
+                    <CardTitle className="text-lg sm:text-xl md:text-2xl text-center flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3">
+                      <span className="text-xl sm:text-2xl">💪</span>
+                      <span>Workout Schedule & Details</span>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="p-8">
+                  <CardContent className="p-4 sm:p-6 md:p-8">
                     {workoutPrograms[
                       selectedSplit as keyof typeof workoutPrograms
                     ].sessions.map((session, sessionIndex) => (
-                      <div key={sessionIndex} className="mb-10 last:mb-0">
-                        <div className="bg-gradient-to-r from-gray-800 to-gray-700 text-white p-6 rounded-t-xl">
-                          <h3 className="text-2xl font-bold text-center flex items-center justify-center gap-3 mb-2">
-                            <span className="text-2xl">🏋️</span>
-                            {session.name}
+                      <div key={sessionIndex} className="mb-6 sm:mb-8 md:mb-10 last:mb-0">
+                        <div className="bg-gradient-to-r from-gray-800 to-gray-700 text-white p-4 sm:p-5 md:p-6 rounded-t-xl">
+                          <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-center flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mb-2">
+                            <span className="text-lg sm:text-xl md:text-2xl">🏋️</span>
+                            <span>{session.name}</span>
                           </h3>
                           <div className="text-center">
                             <Badge
                               variant="secondary"
-                              className="bg-yellow-500 text-black font-semibold px-4 py-2 text-lg"
+                              className="bg-yellow-500 text-black font-semibold px-3 sm:px-4 py-1 sm:py-2 text-sm sm:text-base md:text-lg"
                             >
                               📅 {session.schedule}
                             </Badge>
                           </div>
                         </div>
-                        <div className="bg-white rounded-b-xl shadow-lg border-2 border-gray-100 p-6">
-                          <div className="grid gap-4">
+                        <div className="bg-white rounded-b-xl shadow-lg border-2 border-gray-100 p-4 sm:p-5 md:p-6">
+                          <div className="grid gap-3 sm:gap-4">
                             {session.exercises.map(
                               (exercise, exerciseIndex) => (
                                 <div
                                   key={exerciseIndex}
-                                  className="flex items-center justify-between p-5 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-blue-100 hover:border-blue-200"
+                                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 sm:p-4 md:p-5 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-blue-100 hover:border-blue-200"
                                 >
                                   {/* Exercise details without image */}
-                                  <div className="flex items-center flex-1">
+                                  <div className="flex items-center flex-1 w-full sm:w-auto mb-3 sm:mb-0">
                                     <div className="flex-1">
-                                      <div className="flex items-center gap-4 mb-3">
-                                        <span className="font-bold text-gray-800 text-lg">
+                                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2 sm:mb-3">
+                                        <span className="font-bold text-gray-800 text-sm sm:text-base md:text-lg">
                                           {exercise.name}
                                         </span>
                                         <Badge
                                           variant="secondary"
-                                          className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold px-3 py-1"
+                                          className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold px-2 sm:px-3 py-1 text-xs sm:text-sm w-fit"
                                         >
                                           {exercise.muscle}
                                         </Badge>
                                       </div>
-                                      <span className="text-gray-700 font-semibold text-lg bg-yellow-100 px-3 py-1 rounded-full">
+                                      <span className="text-gray-700 font-semibold text-sm sm:text-base md:text-lg bg-yellow-100 px-2 sm:px-3 py-1 rounded-full inline-block">
                                         {exercise.sets}
                                       </span>
                                     </div>
@@ -1596,16 +1596,15 @@ export default function WorkoutSpinner() {
 
                                   <Button
                                     variant="ghost"
-                                    size="lg"
                                     onClick={() =>
                                       window.open(
                                         `https://www.youtube.com/watch?v=${exercise.youtubeId}`,
                                         "_blank"
                                       )
                                     }
-                                    className="text-red-600 hover:text-red-700 hover:bg-red-50 px-6 py-3 font-semibold rounded-full border-2 border-red-200 hover:border-red-300 transition-all duration-300"
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50 px-3 sm:px-4 md:px-6 py-2 sm:py-3 font-semibold rounded-full border-2 border-red-200 hover:border-red-300 transition-all duration-300 w-full sm:w-auto text-sm sm:text-base"
                                   >
-                                    <Play className="w-5 h-5 mr-2" />
+                                    <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                                     Watch Demo
                                   </Button>
                                 </div>
@@ -1623,26 +1622,26 @@ export default function WorkoutSpinner() {
         )}
 
         {showCongratulations && selectedSplit && (
-          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg shadow-2xl max-w-md w-full mx-4 overflow-hidden">
+          <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
+            <div className="bg-white rounded-lg shadow-2xl max-w-xs sm:max-w-md w-full mx-2 sm:mx-4 overflow-hidden">
               {/* Modal Header */}
-              <div className="bg-blue-500 text-white px-6 py-4 flex items-center justify-between">
-                <h2 className="text-xl font-bold">We have a winner!</h2>
+              <div className="bg-blue-500 text-white px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
+                <h2 className="text-lg sm:text-xl font-bold">We have a winner!</h2>
                 <button
                   onClick={handleCloseModal}
                   className="text-white hover:text-gray-200 transition-colors"
                 >
-                  <X className="w-6 h-6" />
+                  <X className="w-5 h-5 sm:w-6 sm:h-6" />
                 </button>
               </div>
 
               {/* Modal Content */}
-              <div className="p-8 text-center">
-                <div className="mb-8">
-                  <h3 className="text-3xl font-bold text-gray-800 mb-2">
+              <div className="p-4 sm:p-6 md:p-8 text-center">
+                <div className="mb-6 sm:mb-8">
+                  <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-2">
                     {selectedSplit}
                   </h3>
-                  <p className="text-gray-600 text-lg">
+                  <p className="text-gray-600 text-sm sm:text-base md:text-lg">
                     {
                       workoutSplits.find((s) => s.name === selectedSplit)
                         ?.description
@@ -1651,19 +1650,19 @@ export default function WorkoutSpinner() {
                 </div>
 
                 {/* Modal Buttons */}
-                <div className="flex gap-4 justify-center">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
                   <Button
                     onClick={handleCloseModal}
                     variant="outline"
                     size="lg"
-                    className="px-8 py-3 text-lg font-semibold bg-transparent"
+                    className="w-full sm:w-auto px-6 sm:px-8 py-2 sm:py-3 text-base sm:text-lg font-semibold bg-transparent"
                   >
                     Close
                   </Button>
                   <Button
                     onClick={handleShowSplit}
                     size="lg"
-                    className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 text-lg font-semibold"
+                    className="w-full sm:w-auto bg-blue-500 hover:bg-blue-600 text-white px-6 sm:px-8 py-2 sm:py-3 text-base sm:text-lg font-semibold"
                   >
                     Show Split
                   </Button>
@@ -1674,11 +1673,11 @@ export default function WorkoutSpinner() {
         )}
 
         {/* Footer */}
-        <div className="text-center text-gray-600">
-          <p className="text-lg font-medium">
+        <div className="text-center text-gray-600 px-4 sm:px-6 lg:px-8">
+          <p className="text-base sm:text-lg font-medium">
             💪 Stay consistent, stay strong! 🇵🇭
           </p>
-          <p className="mt-2">
+          <p className="mt-2 text-sm sm:text-base">
             All exercise videos are linked to proper form demonstrations on
             YouTube.
           </p>
