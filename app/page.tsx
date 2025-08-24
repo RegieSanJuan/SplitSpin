@@ -13,116 +13,188 @@ import { Badge } from "@/components/ui/badge";
 import { Copy, Camera, Play, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
-// Function to get exercise image from free APIs
-const getExerciseImage = (exerciseName: string) => {
-  // Comprehensive exercise keyword mapping for accurate images
-  const exerciseKeywords: { [key: string]: string } = {
-    // Chest Exercises
-    "bench press": "bench-press-barbell-gym",
-    "incline bench press": "incline-bench-press-barbell",
-    "chest press": "chest-press-machine-gym",
-    "chest press machine": "chest-press-machine",
-    "chest flys": "chest-fly-dumbbell-exercise",
-    "chest flies": "chest-fly-dumbbell-exercise",
-    "incline db press": "incline-dumbbell-press",
-    "push-ups": "pushup-exercise-fitness",
+// Alternative: Google Image Search function (requires API key)
+const searchGoogleImages = async (exerciseName: string): Promise<string> => {
+  try {
+    // Use our API route to search for exercise images
+    const response = await fetch(
+      `/api/search-exercise?exercise=${encodeURIComponent(exerciseName)}`
+    );
+    const data = await response.json();
 
-    // Shoulder Exercises
-    "shoulder press": "shoulder-press-dumbbell-gym",
-    "lateral raises": "lateral-raise-dumbbell-shoulders",
-    "overhead press": "overhead-press-barbell-shoulders",
-    "arnold press": "arnold-press-dumbbell-shoulders",
-    "face pulls": "face-pull-cable-rear-delt",
-    "reverse flys": "reverse-fly-dumbbell-rear-delt",
-    "reverse cable flys": "reverse-cable-fly-rear-delt",
-    "rear delt flys": "rear-delt-fly-exercise",
-    "rear delts": "rear-delt-exercise-cable",
+    if (data.imageUrl) {
+      return data.imageUrl;
+    }
 
-    // Back Exercises
-    "barbell rows": "barbell-row-bent-over",
-    "bent over barbell rows": "bent-over-barbell-row",
-    "lat pulldown": "lat-pulldown-machine-back",
-    "lat pulldowns": "lat-pulldown-wide-grip",
-    "pull-ups": "pull-up-exercise-back",
-    "pull-ups/lat pulldown": "lat-pulldown-machine",
-    "wide-grip row": "wide-grip-cable-row",
-    "seated rows": "seated-cable-row-machine",
-    "seated row machine (narrow)": "seated-cable-row-narrow",
-    "cable rows": "seated-cable-row-back",
-    deadlift: "deadlift-barbell-exercise",
-    "romanian deadlift": "romanian-deadlift-barbell",
-    "seated back extension (machine)": "back-extension-machine",
-
-    // Arm Exercises
-    "hammer curls": "hammer-curl-dumbbell-bicep",
-    "barbell curl": "barbell-bicep-curl-exercise",
-    "barbell curls": "barbell-bicep-curl",
-    "preacher curl": "preacher-curl-machine-bicep",
-    "preacher curl machine (drop set)": "preacher-curl-machine",
-    "tricep pushdowns": "tricep-pushdown-cable-machine",
-    "tricep pushdowns (drop set)": "tricep-pushdown-cable",
-    "single-arm triceps pushdowns": "single-arm-tricep-pushdown",
-    "skull crushers": "skull-crusher-barbell-tricep",
-    "jm press": "close-grip-bench-press-tricep",
-    "close-grip bench press": "close-grip-bench-press",
-    dips: "dips-parallel-bars-tricep",
-    "rope pushdowns": "rope-pushdown-tricep-cable",
-    "forearms (ss extensor/flexor)": "forearm-curl-exercise",
-
-    // Leg Exercises
-    squat: "barbell-squat-exercise-legs",
-    "v-squats": "hack-squat-machine-legs",
-    "hack squat": "hack-squat-machine-exercise",
-    "leg press": "leg-press-machine-exercise",
-    "leg curls": "leg-curl-machine-hamstring",
-    "lying leg curls": "lying-leg-curl-machine",
-    "leg extensions": "leg-extension-machine-quadriceps",
-    lunges: "lunge-exercise-legs",
-    "bulgarian split squats": "bulgarian-split-squat-exercise",
-    "calf raises": "calf-raise-exercise-standing",
-    "seated calf raises": "seated-calf-raise-machine",
-    "adductors machine": "adductor-machine-inner-thigh",
-
-    // Core/Abs Exercises
-    "hanging leg raises": "hanging-leg-raise-pull-up-bar",
-    "ab machine": "ab-crunch-machine-core",
-    "ab crunch (machine)": "ab-crunch-machine",
-    "torso rotation (ss both sides)": "russian-twist-core-exercise",
-    plank: "plank-exercise-core-fitness",
-
-    // Miscellaneous
-    "kelso shrugs": "barbell-shrug-trapezius",
-    "complete rest or light walking": "walking-exercise-recovery",
-    "complete rest or active recovery": "stretching-recovery-fitness",
-    "active recovery": "light-stretching-recovery",
-    "complete rest": "rest-day-recovery",
-    "complete rest or light activity": "yoga-stretching-recovery",
-  };
-
-  // Clean exercise name and find keyword match
-  const cleanName = exerciseName.toLowerCase().trim();
-  const keyword = exerciseKeywords[cleanName];
-
-  if (keyword) {
-    // Use specific keyword for better accuracy
-    return `https://source.unsplash.com/400x300/?${keyword}&sig=${Math.floor(
-      Math.random() * 1000
-    )}`;
-  } else {
-    // Fallback: clean the exercise name and add fitness keywords
-    const fallbackKeyword = exerciseName
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[^\w-]/g, "")
-      .replace(/machine|drop-set|\(.*\)/g, "")
-      .trim();
-
-    return `https://source.unsplash.com/400x300/?${fallbackKeyword}-exercise-fitness-gym&sig=${Math.floor(
-      Math.random() * 1000
-    )}`;
+    throw new Error("No image found");
+  } catch (error) {
+    console.error("Error searching for exercise image:", error);
+    // Fallback to curated mapping
+    return getExerciseImage(exerciseName);
   }
 };
 
+// Function to get exercise image using web search approach
+const getExerciseImage = (exerciseName: string) => {
+  // For a real web search implementation, we'll use a curated mapping
+  // that simulates searching for actual exercise images from fitness websites
+  const exerciseImageMap: { [key: string]: string } = {
+    // Chest Exercises
+    "bench press":
+      "https://www.bodybuilding.com/images/2016/june/how-to-bench-press-with-proper-form-graphics-1.jpg",
+    "incline bench press":
+      "https://www.bodybuilding.com/images/2016/june/how-to-incline-bench-press-graphics-1.jpg",
+    "chest press":
+      "https://cdn.muscleandstrength.com/sites/default/files/chest-press-machine.jpg",
+    "chest press machine":
+      "https://cdn.muscleandstrength.com/sites/default/files/chest-press-machine.jpg",
+    "chest flys":
+      "https://cdn.muscleandstrength.com/sites/default/files/dumbbell-flyes.jpg",
+    "chest flies":
+      "https://cdn.muscleandstrength.com/sites/default/files/dumbbell-flyes.jpg",
+    "incline db press":
+      "https://cdn.muscleandstrength.com/sites/default/files/incline-dumbbell-press.jpg",
+    "push-ups":
+      "https://cdn.muscleandstrength.com/sites/default/files/push-up.jpg",
+
+    // Shoulder Exercises
+    "shoulder press":
+      "https://cdn.muscleandstrength.com/sites/default/files/overhead-press.jpg",
+    "lateral raises":
+      "https://cdn.muscleandstrength.com/sites/default/files/lateral-raise.jpg",
+    "overhead press":
+      "https://cdn.muscleandstrength.com/sites/default/files/overhead-press.jpg",
+    "arnold press":
+      "https://cdn.muscleandstrength.com/sites/default/files/arnold-press.jpg",
+    "face pulls":
+      "https://cdn.muscleandstrength.com/sites/default/files/face-pull.jpg",
+    "reverse flys":
+      "https://cdn.muscleandstrength.com/sites/default/files/reverse-fly.jpg",
+    "reverse cable flys":
+      "https://cdn.muscleandstrength.com/sites/default/files/reverse-fly.jpg",
+    "rear delt flys":
+      "https://cdn.muscleandstrength.com/sites/default/files/rear-delt-fly.jpg",
+    "rear delts":
+      "https://cdn.muscleandstrength.com/sites/default/files/rear-delt-fly.jpg",
+
+    // Back Exercises
+    "barbell rows":
+      "https://cdn.muscleandstrength.com/sites/default/files/bent-over-barbell-row.jpg",
+    "bent over barbell rows":
+      "https://cdn.muscleandstrength.com/sites/default/files/bent-over-barbell-row.jpg",
+    "lat pulldown":
+      "https://cdn.muscleandstrength.com/sites/default/files/lat-pulldown.jpg",
+    "lat pulldowns":
+      "https://cdn.muscleandstrength.com/sites/default/files/lat-pulldown.jpg",
+    "pull-ups":
+      "https://cdn.muscleandstrength.com/sites/default/files/pull-up.jpg",
+    "pull-ups/lat pulldown":
+      "https://cdn.muscleandstrength.com/sites/default/files/pull-up.jpg",
+    "wide-grip row":
+      "https://cdn.muscleandstrength.com/sites/default/files/wide-grip-seated-row.jpg",
+    "seated rows":
+      "https://cdn.muscleandstrength.com/sites/default/files/seated-cable-row.jpg",
+    "seated row machine (narrow)":
+      "https://cdn.muscleandstrength.com/sites/default/files/seated-cable-row.jpg",
+    "cable rows":
+      "https://cdn.muscleandstrength.com/sites/default/files/seated-cable-row.jpg",
+    deadlift:
+      "https://cdn.muscleandstrength.com/sites/default/files/deadlift.jpg",
+    "romanian deadlift":
+      "https://cdn.muscleandstrength.com/sites/default/files/romanian-deadlift.jpg",
+    "seated back extension (machine)":
+      "https://cdn.muscleandstrength.com/sites/default/files/back-extension.jpg",
+
+    // Arm Exercises
+    "hammer curls":
+      "https://cdn.muscleandstrength.com/sites/default/files/hammer-curl.jpg",
+    "barbell curl":
+      "https://cdn.muscleandstrength.com/sites/default/files/barbell-curl.jpg",
+    "barbell curls":
+      "https://cdn.muscleandstrength.com/sites/default/files/barbell-curl.jpg",
+    "preacher curl":
+      "https://cdn.muscleandstrength.com/sites/default/files/preacher-curl.jpg",
+    "preacher curl machine (drop set)":
+      "https://cdn.muscleandstrength.com/sites/default/files/preacher-curl.jpg",
+    "tricep pushdowns":
+      "https://cdn.muscleandstrength.com/sites/default/files/tricep-pushdown.jpg",
+    "tricep pushdowns (drop set)":
+      "https://cdn.muscleandstrength.com/sites/default/files/tricep-pushdown.jpg",
+    "single-arm triceps pushdowns":
+      "https://cdn.muscleandstrength.com/sites/default/files/single-arm-tricep-pushdown.jpg",
+    "skull crushers":
+      "https://cdn.muscleandstrength.com/sites/default/files/skull-crusher.jpg",
+    "jm press":
+      "https://cdn.muscleandstrength.com/sites/default/files/jm-press.jpg",
+    "close-grip bench press":
+      "https://cdn.muscleandstrength.com/sites/default/files/close-grip-bench-press.jpg",
+    dips: "https://cdn.muscleandstrength.com/sites/default/files/dip.jpg",
+    "rope pushdowns":
+      "https://cdn.muscleandstrength.com/sites/default/files/rope-pushdown.jpg",
+    "forearms (ss extensor/flexor)":
+      "https://cdn.muscleandstrength.com/sites/default/files/wrist-curl.jpg",
+
+    // Leg Exercises
+    squat: "https://cdn.muscleandstrength.com/sites/default/files/squat.jpg",
+    "v-squats":
+      "https://cdn.muscleandstrength.com/sites/default/files/hack-squat.jpg",
+    "hack squat":
+      "https://cdn.muscleandstrength.com/sites/default/files/hack-squat.jpg",
+    "leg press":
+      "https://cdn.muscleandstrength.com/sites/default/files/leg-press.jpg",
+    "leg curls":
+      "https://cdn.muscleandstrength.com/sites/default/files/leg-curl.jpg",
+    "lying leg curls":
+      "https://cdn.muscleandstrength.com/sites/default/files/lying-leg-curl.jpg",
+    "leg extensions":
+      "https://cdn.muscleandstrength.com/sites/default/files/leg-extension.jpg",
+    lunges: "https://cdn.muscleandstrength.com/sites/default/files/lunge.jpg",
+    "bulgarian split squats":
+      "https://cdn.muscleandstrength.com/sites/default/files/bulgarian-split-squat.jpg",
+    "calf raises":
+      "https://cdn.muscleandstrength.com/sites/default/files/calf-raise.jpg",
+    "seated calf raises":
+      "https://cdn.muscleandstrength.com/sites/default/files/seated-calf-raise.jpg",
+    "adductors machine":
+      "https://cdn.muscleandstrength.com/sites/default/files/adductor-machine.jpg",
+
+    // Core/Abs Exercises
+    "hanging leg raises":
+      "https://cdn.muscleandstrength.com/sites/default/files/hanging-leg-raise.jpg",
+    "ab machine":
+      "https://cdn.muscleandstrength.com/sites/default/files/ab-crunch-machine.jpg",
+    "ab crunch (machine)":
+      "https://cdn.muscleandstrength.com/sites/default/files/ab-crunch-machine.jpg",
+    "torso rotation (ss both sides)":
+      "https://cdn.muscleandstrength.com/sites/default/files/torso-rotation.jpg",
+    plank: "https://cdn.muscleandstrength.com/sites/default/files/plank.jpg",
+
+    // Miscellaneous
+    "kelso shrugs":
+      "https://cdn.muscleandstrength.com/sites/default/files/kelso-shrug.jpg",
+    "complete rest or light walking":
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop&auto=format",
+    "complete rest or active recovery":
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop&auto=format",
+    "active recovery":
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop&auto=format",
+    "complete rest":
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop&auto=format",
+    "complete rest or light activity":
+      "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=400&h=300&fit=crop&auto=format",
+  };
+
+  // Clean exercise name for lookup
+  const cleanName = exerciseName.toLowerCase().trim();
+
+  // Return mapped image or fallback to a fitness-related image
+  return (
+    exerciseImageMap[cleanName] ||
+    `https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop&auto=format&q=${encodeURIComponent(
+      exerciseName
+    )}`
+  );
+};
 const workoutSplits = [
   {
     name: "Full Body (FBEOD)",
@@ -1256,6 +1328,34 @@ export default function WorkoutSpinner() {
   const [rotation, setRotation] = useState(0);
   const [showCongratulations, setShowCongratulations] = useState(false);
   const [showWorkoutProgram, setShowWorkoutProgram] = useState(false);
+  const [exerciseImages, setExerciseImages] = useState<{
+    [key: string]: string;
+  }>({});
+  const [loadingImages, setLoadingImages] = useState<{
+    [key: string]: boolean;
+  }>({});
+
+  // Function to load exercise image dynamically
+  const loadExerciseImage = async (exerciseName: string) => {
+    if (exerciseImages[exerciseName] || loadingImages[exerciseName]) {
+      return; // Already loaded or loading
+    }
+
+    setLoadingImages((prev) => ({ ...prev, [exerciseName]: true }));
+
+    try {
+      // First try the web search API
+      const imageUrl = await searchGoogleImages(exerciseName);
+      setExerciseImages((prev) => ({ ...prev, [exerciseName]: imageUrl }));
+    } catch (error) {
+      console.error("Failed to load exercise image:", error);
+      // Fallback to static mapping
+      const fallbackUrl = getExerciseImage(exerciseName);
+      setExerciseImages((prev) => ({ ...prev, [exerciseName]: fallbackUrl }));
+    } finally {
+      setLoadingImages((prev) => ({ ...prev, [exerciseName]: false }));
+    }
+  };
 
   const spinWheel = () => {
     if (isSpinning) return;
@@ -1621,32 +1721,51 @@ export default function WorkoutSpinner() {
                                   <div className="flex items-center flex-1">
                                     <div className="w-28 h-20 flex-shrink-0 mr-4">
                                       <div className="relative w-28 h-20 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
-                                        <img
-                                          src={getExerciseImage(exercise.name)}
-                                          alt={`${exercise.name} exercise`}
-                                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                                          loading="lazy"
-                                          onError={(e) => {
-                                            // Multi-level fallback system
-                                            const target =
-                                              e.target as HTMLImageElement;
-                                            const currentSrc = target.src;
-
-                                            if (
-                                              currentSrc.includes("unsplash")
-                                            ) {
-                                              // Fallback to Picsum (random images)
-                                              target.src = `https://picsum.photos/400/300?random=${Math.floor(
-                                                Math.random() * 1000
-                                              )}`;
-                                            } else if (
-                                              currentSrc.includes("picsum")
-                                            ) {
-                                              // Final fallback to placeholder
-                                              target.src = "/placeholder.jpg";
+                                        {loadingImages[exercise.name] ? (
+                                          <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                                            <div className="animate-spin w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                                          </div>
+                                        ) : (
+                                          <img
+                                            src={
+                                              exerciseImages[exercise.name] ||
+                                              getExerciseImage(exercise.name)
                                             }
-                                          }}
-                                        />
+                                            alt={`${exercise.name} exercise`}
+                                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                                            loading="lazy"
+                                            onLoad={() => {
+                                              // Load a fresh image from search when the default loads
+                                              if (
+                                                !exerciseImages[exercise.name]
+                                              ) {
+                                                loadExerciseImage(
+                                                  exercise.name
+                                                );
+                                              }
+                                            }}
+                                            onError={(e) => {
+                                              // Multi-level fallback system
+                                              const target =
+                                                e.target as HTMLImageElement;
+                                              const currentSrc = target.src;
+
+                                              if (
+                                                currentSrc.includes("unsplash")
+                                              ) {
+                                                // Fallback to Picsum (random images)
+                                                target.src = `https://picsum.photos/400/300?random=${Math.floor(
+                                                  Math.random() * 1000
+                                                )}`;
+                                              } else if (
+                                                currentSrc.includes("picsum")
+                                              ) {
+                                                // Final fallback to placeholder
+                                                target.src = "/placeholder.jpg";
+                                              }
+                                            }}
+                                          />
+                                        )}
                                       </div>
                                     </div>
 

@@ -4,7 +4,7 @@ import { GeistMono } from 'geist/font/mono'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'SplitSPin',
+  title: 'SplitSpin',
   description: 'A fun spin-the-wheel web app that randomly selects your workout split.',
 }
 
