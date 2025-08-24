@@ -13,6 +13,72 @@ import { Badge } from "@/components/ui/badge";
 import { Copy, Camera, Play, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
+// Function to get exercise image from free APIs
+const getExerciseImage = (exerciseName: string) => {
+  // Map exercise names to better search terms
+  const exerciseKeywords: { [key: string]: string } = {
+    "bench press": "bench-press-gym",
+    "incline bench press": "incline-bench-press",
+    "chest press": "chest-press-machine",
+    "chest flys": "chest-fly-exercise",
+    "chest flies": "chest-fly-exercise",
+    "shoulder press": "shoulder-press-gym",
+    "lateral raises": "lateral-raises-dumbbells",
+    "overhead press": "overhead-press-barbell",
+    "barbell rows": "barbell-row-exercise",
+    "lat pulldown": "lat-pulldown-machine",
+    "pull-ups": "pull-up-exercise",
+    "hammer curls": "hammer-curls-dumbbells",
+    "barbell curl": "barbell-bicep-curls",
+    "preacher curl": "preacher-curl-machine",
+    "tricep pushdowns": "tricep-pushdown-cable",
+    "skull crushers": "skull-crusher-exercise",
+    dips: "dips-exercise-gym",
+    squat: "squat-exercise-gym",
+    "leg press": "leg-press-machine",
+    deadlift: "deadlift-barbell",
+    "romanian deadlift": "romanian-deadlift",
+    "leg curls": "leg-curl-machine",
+    "leg extensions": "leg-extension-machine",
+    "calf raises": "calf-raises-gym",
+    lunges: "lunges-exercise",
+    "face pulls": "face-pulls-cable",
+    "reverse flys": "reverse-fly-dumbbells",
+    "arnold press": "arnold-press-dumbbells",
+    "wide-grip row": "wide-grip-row",
+    "jm press": "tricep-exercise",
+    "hack squat": "hack-squat-machine",
+    "hanging leg raises": "hanging-leg-raises",
+    "ab machine": "ab-crunch-machine",
+    "kelso shrugs": "shrugs-exercise",
+    "adductors machine": "adductor-machine",
+    "seated back extension": "back-extension",
+    "torso rotation": "core-rotation",
+    "bulgarian split squats": "bulgarian-split-squat",
+    plank: "plank-exercise",
+  };
+
+  // Clean exercise name and find keyword match
+  const cleanName = exerciseName.toLowerCase();
+  const keyword =
+    exerciseKeywords[cleanName] ||
+    exerciseName
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[^\w-]/g, "");
+
+  // Use multiple image sources for better variety
+  const imageAPIs = [
+    `https://source.unsplash.com/400x300/?${keyword},fitness,exercise,gym&sig=${Math.floor(
+      Math.random() * 1000
+    )}`,
+    `https://picsum.photos/400/300?random=${Math.floor(Math.random() * 1000)}`, // Fallback to random images
+  ];
+
+  // Return the primary API (Unsplash)
+  return imageAPIs[0];
+};
+
 const workoutSplits = [
   {
     name: "Full Body (FBEOD)",
@@ -64,7 +130,7 @@ const workoutPrograms = {
             name: "Incline Bench Press",
             sets: "1 set",
             muscle: "Upper Body",
-            youtubeId: "jthXMLGaP3M",
+            youtubeId: "SrqOu55lrYU",
           },
           {
             name: "Chest Flys",
@@ -82,7 +148,7 @@ const workoutPrograms = {
             name: "Wide-Grip Row",
             sets: "1 set",
             muscle: "Upper Body",
-            youtubeId: "UCXxvVItLoM",
+            youtubeId: "FWJR5Ve8bnQ",
           },
           {
             name: "Lat Pulldown",
@@ -112,7 +178,7 @@ const workoutPrograms = {
             name: "JM Press",
             sets: "1 set",
             muscle: "Upper Body",
-            youtubeId: "tyWVbcHHjkg",
+            youtubeId: "d_KZxkY_0cM",
           },
           {
             name: "Reverse Flys",
@@ -130,7 +196,7 @@ const workoutPrograms = {
             name: "Hack Squat",
             sets: "1 set",
             muscle: "Lower Body",
-            youtubeId: "EdtaJRBqEYI",
+            youtubeId: "ultWZbUMPL8",
           },
           {
             name: "Leg Curls",
@@ -208,13 +274,13 @@ const workoutPrograms = {
             name: "JM Press",
             sets: "1 set",
             muscle: "Upper Body",
-            youtubeId: "tyWVbcHHjkg",
+            youtubeId: "d_KZxkY_0cM",
           },
           {
             name: "Kelso Shrugs",
             sets: "1 set",
             muscle: "Upper Body",
-            youtubeId: "g6qZGh9f6d0",
+            youtubeId: "rep-qVOkqgk",
           },
           {
             name: "Leg Press",
@@ -232,7 +298,7 @@ const workoutPrograms = {
             name: "Adductors Machine",
             sets: "1 set",
             muscle: "Lower Body",
-            youtubeId: "RTraFBdS428",
+            youtubeId: "2C-uNgKwPLE",
           },
           {
             name: "Ab Machine",
@@ -274,7 +340,7 @@ const workoutPrograms = {
             name: "Incline Bench Press",
             sets: "3x12",
             muscle: "Chest",
-            youtubeId: "jthXMLGaP3M",
+            youtubeId: "SrqOu55lrYU",
           },
           {
             name: "Chest Flies",
@@ -340,7 +406,7 @@ const workoutPrograms = {
             name: "Forearms (SS Extensor/Flexor)",
             sets: "3x12",
             muscle: "Forearms",
-            youtubeId: "CLDthJcMZgQ",
+            youtubeId: "zC3nLlEvin4",
           },
         ],
       },
@@ -352,7 +418,7 @@ const workoutPrograms = {
             name: "V-Squats",
             sets: "3x12",
             muscle: "Legs",
-            youtubeId: "EdtaJRBqEYI",
+            youtubeId: "ultWZbUMPL8",
           },
           {
             name: "Leg Press",
@@ -382,7 +448,7 @@ const workoutPrograms = {
             name: "Seated Back Extension (Machine)",
             sets: "3x12",
             muscle: "Lower Back",
-            youtubeId: "ph3pddpKzzw",
+            youtubeId: "jEy_czb3RKA",
           },
           {
             name: "Ab Crunch (Machine)",
@@ -394,7 +460,7 @@ const workoutPrograms = {
             name: "Torso Rotation (SS Both Sides)",
             sets: "3x12",
             muscle: "Core",
-            youtubeId: "wkD8rjkodUI",
+            youtubeId: "ASdvN_XEl_c",
           },
         ],
       },
@@ -1507,27 +1573,37 @@ export default function WorkoutSpinner() {
                                   key={exerciseIndex}
                                   className="flex items-center justify-between p-5 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 border border-blue-100 hover:border-blue-200"
                                 >
-                                  {/* Thumbnail + details */}
+                                  {/* Exercise Image + details */}
                                   <div className="flex items-center flex-1">
                                     <div className="w-28 h-20 flex-shrink-0 mr-4">
-                                      <a
-                                        href={`https://www.youtube.com/watch?v=${exercise.youtubeId}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        title={`Watch ${exercise.name} demo on YouTube`}
-                                      >
-                                        <div className="relative w-28 h-20 rounded-lg overflow-hidden bg-gray-100">
-                                          <img
-                                            src={`https://img.youtube.com/vi/${exercise.youtubeId}/hqdefault.jpg`}
-                                            alt={`${exercise.name} thumbnail`}
-                                            className="w-full h-full object-cover"
-                                            loading="lazy"
-                                          />
-                                          <div className="absolute inset-0 bg-black bg-opacity-25 flex items-center justify-center">
-                                            <Play className="w-6 h-6 text-white" />
-                                          </div>
-                                        </div>
-                                      </a>
+                                      <div className="relative w-28 h-20 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+                                        <img
+                                          src={getExerciseImage(exercise.name)}
+                                          alt={`${exercise.name} exercise`}
+                                          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                                          loading="lazy"
+                                          onError={(e) => {
+                                            // Multi-level fallback system
+                                            const target =
+                                              e.target as HTMLImageElement;
+                                            const currentSrc = target.src;
+
+                                            if (
+                                              currentSrc.includes("unsplash")
+                                            ) {
+                                              // Fallback to Picsum (random images)
+                                              target.src = `https://picsum.photos/400/300?random=${Math.floor(
+                                                Math.random() * 1000
+                                              )}`;
+                                            } else if (
+                                              currentSrc.includes("picsum")
+                                            ) {
+                                              // Final fallback to placeholder
+                                              target.src = "/placeholder.jpg";
+                                            }
+                                          }}
+                                        />
+                                      </div>
                                     </div>
 
                                     <div className="flex-1">
